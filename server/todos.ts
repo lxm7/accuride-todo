@@ -148,3 +148,30 @@ export const updateTodo = async (
     return { success: false, message: toMessage(error) };
   }
 };
+
+export const deleteTodo = async (id: string): Promise<ActionResult<Todo>> => {
+  const { currentUser } = await getCurrentUser();
+
+  const parsedId = todoIdSchema.safeParse(id);
+
+  if (!parsedId.success) {
+    return { success: false, message: parsedId.error.issues[0].message };
+  }
+
+  try {
+    const [deleted] = await db
+      .delete(todo)
+      .where(and(eq(todo.id, parsedId.data), eq(todo.userId, currentUser.id)))
+      .returning();
+
+    if (!deleted) {
+      return { success: false, message: NOT_FOUND };
+    }
+
+    revalidateTodos();
+
+    return { success: true, message: "Todo deleted.", data: deleted };
+  } catch (error) {
+    return { success: false, message: toMessage(error) };
+  }
+};

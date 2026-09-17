@@ -1,4 +1,5 @@
 import { CreateTodoForm } from "@/components/forms/create-todo-form";
+import { TodoItem } from "@/components/todo-item";
 import { getTodos } from "@/server/queries/todos";
 import {
   Card,
@@ -28,24 +29,7 @@ export async function Todos() {
               No todos yet.
             </li>
           ) : (
-            todos.map((item) => (
-              <li className="rounded-md border p-4" key={item.id}>
-                <p
-                  className={
-                    item.completed
-                      ? "text-muted-foreground line-through"
-                      : "font-medium"
-                  }
-                >
-                  {item.title}
-                </p>
-                {item.description && (
-                  <p className="mt-1 text-muted-foreground text-sm">
-                    {item.description}
-                  </p>
-                )}
-              </li>
-            ))
+            todos.map((item) => <TodoItem key={item.id} todo={item} />)
           )}
         </ul>
       </CardContent>
