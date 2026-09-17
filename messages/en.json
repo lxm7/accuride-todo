@@ -1,0 +1,63 @@
+{
+  "AuthLayout": {
+    "brand": "Better Auth Starter",
+    "logoAlt": "Better Auth Starter Logo",
+    "loading": "Loading..."
+  },
+  "Legal": {
+    "agreement": "By clicking continue, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>."
+  },
+  "LoginForm": {
+    "title": "Welcome back",
+    "description": "Login with your Google account",
+    "google": "Login with Google",
+    "lastUsed": "last used",
+    "divider": "Or continue with",
+    "emailLabel": "Email",
+    "emailPlaceholder": "m@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "********",
+    "forgotPassword": "Forgot your password?",
+    "submit": "Login",
+    "noAccount": "Don't have an account?",
+    "signUpLink": "Sign up"
+  },
+  "SignupForm": {
+    "title": "Create your account",
+    "description": "Signup with your Google account",
+    "google": "Signup with Google",
+    "divider": "Or continue with",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "shadcn",
+    "emailLabel": "Email",
+    "emailPlaceholder": "m@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "********",
+    "forgotPassword": "Forgot your password?",
+    "submit": "Signup",
+    "haveAccount": "Already have an account?",
+    "loginLink": "Login",
+    "verifyEmail": "Please check your email for verification."
+  },
+  "ForgotPasswordForm": {
+    "title": "Forgot Password",
+    "description": "Enter your email to reset your password",
+    "emailLabel": "Email",
+    "emailPlaceholder": "m@example.com",
+    "submit": "Reset Password",
+    "emailSent": "Password reset email sent",
+    "noAccount": "Don't have an account?",
+    "signUpLink": "Sign up"
+  },
+  "ResetPasswordForm": {
+    "title": "Reset Password",
+    "description": "Enter your new password",
+    "passwordLabel": "Password",
+    "confirmPasswordLabel": "Confirm Password",
+    "submit": "Reset Password",
+    "passwordMismatch": "Passwords do not match",
+    "success": "Password reset successfully",
+    "noAccount": "Don't have an account?",
+    "signUpLink": "Sign up"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "AuthLayout": {
+    "brand": "Better Auth Starter",
+    "logoAlt": "Logo Better Auth Starter",
+    "loading": "Chargement…"
+  },
+  "Legal": {
+    "agreement": "En cliquant sur continuer, vous acceptez nos <terms>Conditions d'utilisation</terms> et notre <privacy>Politique de confidentialité</privacy>."
+  },
+  "LoginForm": {
+    "title": "Bon retour parmi nous",
+    "description": "Connectez-vous avec votre compte Google",
+    "google": "Se connecter avec Google",
+    "lastUsed": "utilisé en dernier",
+    "divider": "Ou continuer avec",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "m@example.com",
+    "passwordLabel": "Mot de passe",
+    "passwordPlaceholder": "********",
+    "forgotPassword": "Mot de passe oublié ?",
+    "submit": "Se connecter",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "signUpLink": "S'inscrire"
+  },
+  "SignupForm": {
+    "title": "Créez votre compte",
+    "description": "Inscrivez-vous avec votre compte Google",
+    "google": "S'inscrire avec Google",
+    "divider": "Ou continuer avec",
+    "usernameLabel": "Nom d'utilisateur",
+    "usernamePlaceholder": "shadcn",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "m@example.com",
+    "passwordLabel": "Mot de passe",
+    "passwordPlaceholder": "********",
+    "forgotPassword": "Mot de passe oublié ?",
+    "submit": "S'inscrire",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "loginLink": "Se connecter",
+    "verifyEmail": "Veuillez consulter votre e-mail pour la vérification."
+  },
+  "ForgotPasswordForm": {
+    "title": "Mot de passe oublié",
+    "description": "Saisissez votre e-mail pour réinitialiser votre mot de passe",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "m@example.com",
+    "submit": "Réinitialiser le mot de passe",
+    "emailSent": "E-mail de réinitialisation envoyé",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "signUpLink": "S'inscrire"
+  },
+  "ResetPasswordForm": {
+    "title": "Réinitialiser le mot de passe",
+    "description": "Saisissez votre nouveau mot de passe",
+    "passwordLabel": "Mot de passe",
+    "confirmPasswordLabel": "Confirmer le mot de passe",
+    "submit": "Réinitialiser le mot de passe",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "success": "Mot de passe réinitialisé avec succès",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "signUpLink": "S'inscrire"
+  }
+}

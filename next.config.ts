@@ -1,3 +1,4 @@
+import createNextIntlPlugin from "next-intl/plugin";
 import type { NextConfig } from "next";
 
 function resolveAppUrl(): string {
@@ -20,4 +21,7 @@ const nextConfig: NextConfig = {
   env: { NEXT_PUBLIC_APP_URL: resolveAppUrl() },
 };
 
-export default nextConfig;
+// Resolves `./i18n/request.ts` by convention.
+const withNextIntl = createNextIntlPlugin();
+
+export default withNextIntl(nextConfig);
