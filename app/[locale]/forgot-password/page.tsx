@@ -1,8 +1,18 @@
 import Image from "next/image";
-import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ForgotPasswordForm } from "@/components/forms/forgot-password-form";
+import { Link } from "@/i18n/navigation";
 
-export default function LoginPage() {
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function ForgotPasswordPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("AuthLayout");
+
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
@@ -12,14 +22,14 @@ export default function LoginPage() {
         >
           <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <Image
-              alt="Better Auth Starter Logo"
+              alt={t("logoAlt")}
               height={50}
               priority
               src={"/better-auth-starter.png"}
               width={50}
             />
           </div>
-          Better Auth Starter
+          {t("brand")}
         </Link>
         <ForgotPasswordForm />
       </div>

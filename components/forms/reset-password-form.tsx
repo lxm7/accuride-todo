@@ -2,13 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 import { z } from "zod";
+import { LegalNotice } from "@/components/forms/legal-notice";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,6 +26,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Link, useRouter } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +39,10 @@ export function ResetPasswordForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const t = useTranslations("ResetPasswordForm");
+
+  // `useSearchParams` stays on `next/navigation`: query strings carry no
+  // locale, so there is no locale-aware equivalent to swap in here.
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -57,7 +62,7 @@ export function ResetPasswordForm({
     setIsLoading(true);
 
     if (values.password !== values.confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error(t("passwordMismatch"));
       setIsLoading(false);
       return;
     }
@@ -70,7 +75,7 @@ export function ResetPasswordForm({
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success("Password reset successfully");
+      toast.success(t("success"));
       router.push("/login");
     }
 
@@ -81,8 +86,8 @@ export function ResetPasswordForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Reset Password</CardTitle>
-          <CardDescription>Enter your new password</CardDescription>
+          <CardTitle className="text-xl">{t("title")}</CardTitle>
+          <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -94,7 +99,7 @@ export function ResetPasswordForm({
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel>{t("passwordLabel")}</FormLabel>
                         <FormControl>
                           <Input {...field} type="password" />
                         </FormControl>
@@ -109,7 +114,7 @@ export function ResetPasswordForm({
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
+                        <FormLabel>{t("confirmPasswordLabel")}</FormLabel>
                         <FormControl>
                           <Input {...field} type="password" />
                         </FormControl>
@@ -122,25 +127,21 @@ export function ResetPasswordForm({
                   {isLoading ? (
                     <Loader2 className="size-4 animate-spin" />
                   ) : (
-                    "Reset Password"
+                    t("submit")
                   )}
                 </Button>
               </div>
               <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
+                {t("noAccount")}{" "}
                 <Link className="underline underline-offset-4" href="/signup">
-                  Sign up
+                  {t("signUpLink")}
                 </Link>
               </div>
             </form>
           </Form>
         </CardContent>
       </Card>
-      <div className="text-balance text-center text-muted-foreground text-xs *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary">
-        By clicking continue, you agree to our{" "}
-        <Link href="#">Terms of Service</Link> and{" "}
-        <Link href="#">Privacy Policy</Link>.
-      </div>
+      <LegalNotice />
     </div>
   );
 }

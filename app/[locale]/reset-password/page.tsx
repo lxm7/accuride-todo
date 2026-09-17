@@ -1,9 +1,19 @@
 import Image from "next/image";
-import Link from "next/link";
-import { ResetPasswordForm } from "@/components/forms/reset-password-form";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Suspense } from "react";
+import { ResetPasswordForm } from "@/components/forms/reset-password-form";
+import { Link } from "@/i18n/navigation";
 
-export default function LoginPage() {
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function ResetPasswordPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("AuthLayout");
+
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
@@ -13,16 +23,18 @@ export default function LoginPage() {
         >
           <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <Image
-              alt="Better Auth Starter Logo"
+              alt={t("logoAlt")}
               height={50}
               priority
               src={"/better-auth-starter.png"}
               width={50}
             />
           </div>
-          Better Auth Starter
+          {t("brand")}
         </Link>
-        <Suspense fallback={<div className="text-center">Loading...</div>}>
+        {/* Required: ResetPasswordForm reads `token` via useSearchParams, which
+            opts the subtree into client-side rendering during prerender. */}
+        <Suspense fallback={<div className="text-center">{t("loading")}</div>}>
           <ResetPasswordForm />
         </Suspense>
       </div>

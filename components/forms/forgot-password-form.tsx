@@ -2,11 +2,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { LegalNotice } from "@/components/forms/legal-notice";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,6 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { getPathname, Link } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 
@@ -35,6 +37,9 @@ export function ForgotPasswordForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const t = useTranslations("ForgotPasswordForm");
+  const locale = useLocale();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,13 +54,15 @@ export function ForgotPasswordForm({
 
     const { error } = await authClient.requestPasswordReset({
       email: values.email,
-      redirectTo: "/reset-password",
+      // This path is embedded in the reset email and followed days later, well
+      // outside any router, so it has to carry the locale prefix itself.
+      redirectTo: getPathname({ href: "/reset-password", locale }),
     });
 
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success("Password reset email sent");
+      toast.success(t("emailSent"));
     }
 
     setIsLoading(false);
@@ -65,10 +72,8 @@ export function ForgotPasswordForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Forgot Password</CardTitle>
-          <CardDescription>
-            Enter your email to reset your password
-          </CardDescription>
+          <CardTitle className="text-xl">{t("title")}</CardTitle>
+          <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -80,9 +85,12 @@ export function ForgotPasswordForm({
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>{t("emailLabel")}</FormLabel>
                         <FormControl>
-                          <Input placeholder="m@example.com" {...field} />
+                          <Input
+                            placeholder={t("emailPlaceholder")}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -93,25 +101,21 @@ export function ForgotPasswordForm({
                   {isLoading ? (
                     <Loader2 className="size-4 animate-spin" />
                   ) : (
-                    "Reset Password"
+                    t("submit")
                   )}
                 </Button>
               </div>
               <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
+                {t("noAccount")}{" "}
                 <Link className="underline underline-offset-4" href="/signup">
-                  Sign up
+                  {t("signUpLink")}
                 </Link>
               </div>
             </form>
           </Form>
         </CardContent>
       </Card>
-      <div className="text-balance text-center text-muted-foreground text-xs *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary">
-        By clicking continue, you agree to our{" "}
-        <Link href="#">Terms of Service</Link> and{" "}
-        <Link href="#">Privacy Policy</Link>.
-      </div>
+      <LegalNotice />
     </div>
   );
 }

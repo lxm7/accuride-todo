@@ -2,12 +2,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { LegalNotice } from "@/components/forms/legal-notice";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,6 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { getPathname, Link, useRouter } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { signUp } from "@/server/users";
@@ -39,6 +40,9 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const t = useTranslations("SignupForm");
+  const locale = useLocale();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
@@ -54,7 +58,9 @@ export function SignupForm({
   const signInWithGoogle = async () => {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/todos",
+      // Redirected to verbatim by better-auth after the OAuth round trip, so
+      // the locale prefix has to be baked in here.
+      callbackURL: getPathname({ href: "/todos", locale }),
     });
   };
 
@@ -64,13 +70,11 @@ export function SignupForm({
     const { success, message } = await signUp(
       values.email,
       values.password,
-      values.username,
+      values.username
     );
 
     if (success) {
-      toast.success(
-        `${message as string} Please check your email for verification.`,
-      );
+      toast.success(`${message as string} ${t("verifyEmail")}`);
       router.push("/todos");
     } else {
       toast.error(message as string);
@@ -83,8 +87,8 @@ export function SignupForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
-          <CardDescription>Signup with your Google account</CardDescription>
+          <CardTitle className="text-xl">{t("title")}</CardTitle>
+          <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -104,12 +108,12 @@ export function SignupForm({
                         fill="currentColor"
                       />
                     </svg>
-                    Signup with Google
+                    {t("google")}
                   </Button>
                 </div>
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-border after:border-t">
                   <span className="relative z-10 bg-card px-2 text-muted-foreground">
-                    Or continue with
+                    {t("divider")}
                   </span>
                 </div>
                 <div className="grid gap-6">
@@ -119,9 +123,12 @@ export function SignupForm({
                       name="username"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Username</FormLabel>
+                          <FormLabel>{t("usernameLabel")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="shadcn" {...field} />
+                            <Input
+                              placeholder={t("usernamePlaceholder")}
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -133,9 +140,12 @@ export function SignupForm({
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>{t("emailLabel")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="m@example.com" {...field} />
+                            <Input
+                              placeholder={t("emailPlaceholder")}
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -149,10 +159,10 @@ export function SignupForm({
                         name="password"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Password</FormLabel>
+                            <FormLabel>{t("passwordLabel")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="********"
+                                placeholder={t("passwordPlaceholder")}
                                 {...field}
                                 type="password"
                               />
@@ -165,7 +175,7 @@ export function SignupForm({
                         className="ml-auto text-sm underline-offset-4 hover:underline"
                         href="/forgot-password"
                       >
-                        Forgot your password?
+                        {t("forgotPassword")}
                       </Link>
                     </div>
                   </div>
@@ -173,14 +183,14 @@ export function SignupForm({
                     {isLoading ? (
                       <Loader2 className="size-4 animate-spin" />
                     ) : (
-                      "Signup"
+                      t("submit")
                     )}
                   </Button>
                 </div>
                 <div className="text-center text-sm">
-                  Already have an account?{" "}
+                  {t("haveAccount")}{" "}
                   <Link className="underline underline-offset-4" href="/login">
-                    Login
+                    {t("loginLink")}
                   </Link>
                 </div>
               </div>
@@ -188,11 +198,7 @@ export function SignupForm({
           </Form>
         </CardContent>
       </Card>
-      <div className="text-balance text-center text-muted-foreground text-xs *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary">
-        By clicking continue, you agree to our{" "}
-        <Link href="#">Terms of Service</Link> and{" "}
-        <Link href="#">Privacy Policy</Link>.
-      </div>
+      <LegalNotice />
     </div>
   );
 }
