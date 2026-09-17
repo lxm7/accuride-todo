@@ -1,7 +1,23 @@
 import type { NextConfig } from "next";
 
+function resolveAppUrl(): string {
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL;
+  }
+  if (
+    process.env.VERCEL_ENV === "production" &&
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return "http://localhost:3000";
+}
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  env: { NEXT_PUBLIC_APP_URL: resolveAppUrl() },
 };
 
 export default nextConfig;
