@@ -18,7 +18,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { type CreateTodoInput, createTodoSchema } from "@/lib/schemas/todo";
 import { createTodo } from "@/server/todos";
 
-export function CreateTodoForm() {
+type CreateTodoFormProps = {
+  // The day a calendar cell was clicked. Absent on the todos page, where a
+  // todo is created unscheduled.
+  dueDate?: Date;
+  // Lets a host — the calendar's dialog — close itself once the row exists.
+  onCreated?: () => void;
+};
+
+export function CreateTodoForm({ dueDate, onCreated }: CreateTodoFormProps) {
   const form = useForm<CreateTodoInput>({
     resolver: zodResolver(createTodoSchema),
     defaultValues: {
@@ -28,7 +36,10 @@ export function CreateTodoForm() {
   });
 
   async function onSubmit(values: CreateTodoInput) {
-    const { success, message } = await createTodo(values);
+    // Merged at submit rather than held in form state: as a default value it
+    // would go stale the moment the dialog is reopened on a different day,
+    // since `defaultValues` is only read on mount.
+    const { success, message } = await createTodo({ ...values, dueDate });
 
     if (success) {
       toast.success(message);
@@ -36,6 +47,7 @@ export function CreateTodoForm() {
       // it does not touch this client component's state — the inputs keep
       // their values until they are cleared explicitly.
       form.reset();
+      onCreated?.();
       return;
     }
 
