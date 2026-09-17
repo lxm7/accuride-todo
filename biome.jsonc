@@ -6,7 +6,6 @@
       "!public",
       "!components/ui",
       "!hooks/use-mobile.ts",
-      "!lib/utils.ts",
       "!.source"
     ]
   }
