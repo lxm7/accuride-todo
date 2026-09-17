@@ -1,10 +1,21 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Pencil } from "lucide-react";
+import { Loader2, Pencil, Trash2 } from "lucide-react";
 import { startTransition, useOptimistic, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -28,10 +39,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { Todo } from "@/db/schema";
 import { type UpdateTodoInput, updateTodoSchema } from "@/lib/schemas/todo";
-import { setTodoCompleted, updateTodo } from "@/server/todos";
+import { deleteTodo, setTodoCompleted, updateTodo } from "@/server/todos";
 
 export function TodoItem({ todo }: { todo: Todo }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // The server round trip plus revalidation is visible on a checkbox. The
   // optimistic value is discarded once the re-rendered server component
@@ -72,6 +85,23 @@ export function TodoItem({ todo }: { todo: Todo }) {
     }
 
     toast.error(result.message);
+  }
+
+  async function onDelete() {
+    setIsDeleting(true);
+
+    const result = await deleteTodo(todo.id);
+
+    if (result.success) {
+      // The row disappears when the revalidated list arrives, unmounting this
+      // component — no need to reset the local state it leaves behind.
+      toast.success(result.message);
+      return;
+    }
+
+    toast.error(result.message);
+    setIsDeleting(false);
+    setIsConfirmingDelete(false);
   }
 
   return (
@@ -161,6 +191,49 @@ export function TodoItem({ todo }: { todo: Todo }) {
           </Form>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        onOpenChange={setIsConfirmingDelete}
+        open={isConfirmingDelete}
+      >
+        <AlertDialogTrigger asChild>
+          <Button
+            aria-label={`Delete "${todo.title}"`}
+            size="icon"
+            variant="ghost"
+          >
+            <Trash2 className="size-4" />
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this todo?</AlertDialogTitle>
+            <AlertDialogDescription>
+              &ldquo;{todo.title}&rdquo; will be permanently deleted. This
+              cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={isDeleting}
+              // Radix closes the dialog on action click; preventing the
+              // default keeps it open with a spinner until the row is gone.
+              onClick={(event) => {
+                event.preventDefault();
+                onDelete();
+              }}
+              variant="destructive"
+            >
+              {isDeleting ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                "Delete"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </li>
   );
 }
