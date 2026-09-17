@@ -19,20 +19,20 @@ import withDragAndDrop, {
 import type { Todo } from "@/db/schema";
 import { localizer } from "./localizer";
 
-export type TodoEvent = {
+export interface TodoEvent {
   id: string;
   title: string;
   start: Date;
   end: Date;
   allDay: true;
   todo: Todo;
-};
+}
 
-type CalendarGridProps = {
+interface CalendarGridProps {
   todos: Todo[];
   onCreateAt: (date: Date) => void;
   onReschedule: (todo: Todo, day: Date) => void;
-};
+}
 
 const DragAndDropCalendar = withDragAndDrop<TodoEvent>(Calendar);
 
@@ -54,7 +54,7 @@ const toEvents = (todos: Todo[]): TodoEvent[] =>
             allDay: true as const,
             todo,
           },
-        ],
+        ]
   );
 
 export default function CalendarGrid({
@@ -82,7 +82,7 @@ export default function CalendarGrid({
       noEventsInRange: t("noEventsInRange"),
       showMore: (count: number) => t("showMore", { count }),
     }),
-    [t],
+    [t]
   );
 
   return (
@@ -93,12 +93,12 @@ export default function CalendarGrid({
         culture={locale}
         date={date}
         endAccessor="end"
-        events={events}
         eventPropGetter={(event: TodoEvent) =>
           event.todo.completed
             ? { className: "line-through opacity-60" }
             : { className: "" }
         }
+        events={events}
         localizer={localizer}
         messages={messages}
         onEventDrop={({ event, start }: EventInteractionArgs<TodoEvent>) =>

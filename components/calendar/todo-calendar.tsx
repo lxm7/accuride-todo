@@ -26,7 +26,10 @@ const CalendarGrid = dynamic(() => import("./calendar-grid"), {
   ),
 });
 
-type Reschedule = { id: string; dueDate: Date };
+interface Reschedule {
+  id: string;
+  dueDate: Date;
+}
 
 export function TodoCalendar({ todos }: { todos: Todo[] }) {
   const [createAt, setCreateAt] = useState<Date | null>(null);

@@ -10,13 +10,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-type CreateTodoDialogProps = {
+interface CreateTodoDialogProps {
   // The clicked day, or `null` for "no day clicked" — which is also the
   // closed state. One value rather than a `date` plus an `open` boolean,
   // so the two can never disagree.
   dueDate: Date | null;
   onClose: () => void;
-};
+}
 
 export function CreateTodoDialog({ dueDate, onClose }: CreateTodoDialogProps) {
   const t = useTranslations("Calendar");

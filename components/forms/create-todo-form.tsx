@@ -18,13 +18,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { type CreateTodoInput, createTodoSchema } from "@/lib/schemas/todo";
 import { createTodo } from "@/server/todos";
 
-type CreateTodoFormProps = {
+interface CreateTodoFormProps {
   // The day a calendar cell was clicked. Absent on the todos page, where a
   // todo is created unscheduled.
   dueDate?: Date;
   // Lets a host — the calendar's dialog — close itself once the row exists.
   onCreated?: () => void;
-};
+}
 
 export function CreateTodoForm({ dueDate, onCreated }: CreateTodoFormProps) {
   const form = useForm<CreateTodoInput>({

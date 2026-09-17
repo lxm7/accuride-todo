@@ -1,5 +1,5 @@
-import createNextIntlPlugin from "next-intl/plugin";
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
 function resolveAppUrl(): string {
   if (process.env.NEXT_PUBLIC_APP_URL) {

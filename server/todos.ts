@@ -30,7 +30,7 @@ const toMessage = (error: unknown) =>
   error instanceof Error ? error.message : "An unknown error occurred.";
 
 export const createTodo = async (
-  input: CreateTodoInput,
+  input: CreateTodoInput
 ): Promise<ActionResult> => {
   const { currentUser } = await getCurrentUser();
 
@@ -58,7 +58,7 @@ export const createTodo = async (
 
 export const setTodoCompleted = async (
   id: string,
-  completed: boolean,
+  completed: boolean
 ): Promise<ActionResult<Todo>> => {
   const { currentUser } = await getCurrentUser();
 
@@ -95,7 +95,7 @@ export const setTodoCompleted = async (
 
 export const setTodoDueDate = async (
   id: string,
-  dueDate: Date | null,
+  dueDate: Date | null
 ): Promise<ActionResult<Todo>> => {
   const { currentUser } = await getCurrentUser();
 
@@ -132,7 +132,7 @@ export const setTodoDueDate = async (
 
 export const updateTodo = async (
   id: string,
-  input: UpdateTodoInput,
+  input: UpdateTodoInput
 ): Promise<ActionResult<Todo>> => {
   const { currentUser } = await getCurrentUser();
 
