@@ -142,11 +142,20 @@ export const todo = pgTable(
     title: text("title").notNull(),
     description: text("description"),
     completed: boolean("completed").default(false).notNull(),
+    // Nullable: a todo without a due date is simply unscheduled, and never
+    // reaches the calendar. `withTimezone` stores an absolute instant, so
+    // "due at 09:00" survives the user changing timezone.
+    dueDate: timestamp("due_date", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
   },
-  (table) => [index("todo_user_id_idx").on(table.userId)]
+  (table) => [
+    index("todo_user_id_idx").on(table.userId),
+    // Ordered `(userId, dueDate)` so a future "todos in the visible month"
+    // query can range-scan the second column after seeking the first.
+    index("todo_user_id_due_date_idx").on(table.userId, table.dueDate),
+  ]
 );
 
 export type Todo = typeof todo.$inferSelect;

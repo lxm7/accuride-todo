@@ -15,6 +15,13 @@
       "when": 1789651881801,
       "tag": "0001_outstanding_vin_gonzales",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789659648155,
+      "tag": "0002_lowly_eternals",
+      "breakpoints": true
     }
   ]
 }
