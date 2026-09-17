@@ -1,5 +1,13 @@
 import { relations } from "drizzle-orm";
-import { boolean, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  index,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -124,6 +132,25 @@ export const invitation = pgTable("invitation", {
     .references(() => user.id, { onDelete: "cascade" }),
 });
 
+export const todo = pgTable(
+  "todo",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    description: text("description"),
+    completed: boolean("completed").default(false).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [index("todo_user_id_idx").on(table.userId)]
+);
+
+export type Todo = typeof todo.$inferSelect;
+
 export const schema = {
   user,
   session,
@@ -132,6 +159,7 @@ export const schema = {
   organization,
   member,
   invitation,
+  todo,
   organizationRelations,
   memberRelations,
 };
