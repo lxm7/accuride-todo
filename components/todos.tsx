@@ -1,4 +1,5 @@
-import { Button } from "./ui/button";
+import { CreateTodoForm } from "@/components/forms/create-todo-form";
+import { getTodos } from "@/server/queries/todos";
 import {
   Card,
   CardContent,
@@ -6,9 +7,10 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Input } from "./ui/input";
 
-export function Todos() {
+export async function Todos() {
+  const todos = await getTodos();
+
   return (
     <Card>
       <CardHeader>
@@ -18,15 +20,33 @@ export function Todos() {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <form className="flex items-center gap-2">
-          <Input name="title" placeholder="Add a todo..." />
-          <Button type="submit">Add</Button>
-        </form>
+        <CreateTodoForm />
 
         <ul className="flex flex-col gap-2">
-          <li className="rounded-md border p-8 text-center text-muted-foreground text-sm">
-            No todos yet.
-          </li>
+          {todos.length === 0 ? (
+            <li className="rounded-md border p-8 text-center text-muted-foreground text-sm">
+              No todos yet.
+            </li>
+          ) : (
+            todos.map((item) => (
+              <li className="rounded-md border p-4" key={item.id}>
+                <p
+                  className={
+                    item.completed
+                      ? "text-muted-foreground line-through"
+                      : "font-medium"
+                  }
+                >
+                  {item.title}
+                </p>
+                {item.description && (
+                  <p className="mt-1 text-muted-foreground text-sm">
+                    {item.description}
+                  </p>
+                )}
+              </li>
+            ))
+          )}
         </ul>
       </CardContent>
     </Card>
