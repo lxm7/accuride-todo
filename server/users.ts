@@ -3,8 +3,10 @@
 import { eq, inArray, not } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 import { db } from "@/db/drizzle";
 import { member, user } from "@/db/schema";
+import { getPathname } from "@/i18n/navigation";
 import { auth } from "@/lib/auth";
 
 export const getCurrentUser = async () => {
@@ -12,8 +14,13 @@ export const getCurrentUser = async () => {
     headers: await headers(),
   });
 
+  // `getPathname` + `next/navigation`'s `redirect`, rather than the
+  // locale-aware `redirect` from `@/i18n/navigation`: the latter is
+  // destructured from `createNavigation`, so its `never` return type carries
+  // no explicit annotation and TypeScript stops narrowing `session` past the
+  // call. This runs outside the router, so the locale has to be explicit.
   if (!session) {
-    redirect("/login");
+    redirect(getPathname({ href: "/login", locale: await getLocale() }));
   }
 
   const currentUser = await db.query.user.findFirst({
@@ -21,7 +28,7 @@ export const getCurrentUser = async () => {
   });
 
   if (!currentUser) {
-    redirect("/login");
+    redirect(getPathname({ href: "/login", locale: await getLocale() }));
   }
 
   return {
