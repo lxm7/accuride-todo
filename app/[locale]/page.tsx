@@ -1,19 +1,27 @@
 import Image from "next/image";
+import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { ModeSwitcher } from "@/components/mode-switcher";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
+import { getLandingPage } from "@/lib/cms";
 
 interface Props {
   params: Promise<{ locale: string }>;
 }
 
-// NOTE: copy on this page is intentionally still hardcoded English — the
-// message extraction was scoped to the auth pages. Keys belong in a
-// `HomePage` namespace when that follow-up happens.
 export default async function Home({ params }: Props) {
   const { locale } = await params;
+
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+
   setRequestLocale(locale);
+
+  const landingPage = await getLandingPage(locale);
 
   return (
     <>
@@ -29,7 +37,7 @@ export default async function Home({ params }: Props) {
           width={100}
         />
 
-        <h1 className="font-bold text-4xl">Better Auth Starter</h1>
+        <h1 className="font-bold text-4xl">{landingPage.heading}</h1>
 
         <p className="text-lg">
           This is a starter project for Better Auth. It is a simple project that
